@@ -1,0 +1,202 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>GrowthFactor Books</title>
+<style>
+:root{--bg:#f6f5f0;--card:#fff;--tx:#1f2a1f;--mu:#5d6a5d;--bd:#d9d9cf;--ac:#2f6b3a;--ac2:#e8f1e6;--bad:#b3261e;--wb:#fff3cd;--wt:#664d03;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151a15;--card:#1f261f;--tx:#e8efe6;--mu:#9fae9f;--bd:#334033;--ac:#7fc78a;--ac2:#243324;--bad:#ff8a80;--wb:#3d3410;--wt:#ffe69c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#151a15;--card:#1f261f;--tx:#e8efe6;--mu:#9fae9f;--bd:#334033;--ac:#7fc78a;--ac2:#243324;--bad:#ff8a80;--wb:#3d3410;--wt:#ffe69c;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+main{max-width:920px;margin:0 auto;padding:12px}
+h1{font-size:1.4rem;margin:6px 0}h2{font-size:1.15rem;margin:0 0 4px}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+button{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:8px 12px;cursor:pointer}
+button.on,button.p{background:var(--ac);color:#fff;border-color:var(--ac)}button.d{color:var(--bad)}button.s{padding:3px 8px;font-size:.85rem}
+section,.box{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+.i{color:var(--mu);margin:0 0 8px;font-size:.92rem}
+.r{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--bd)}
+.r small,.t small{display:block;color:var(--mu);font-size:.82rem}.v{font-weight:700;text-align:right;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px}
+.t{background:var(--ac2);border-radius:10px;padding:10px}.t b{font-size:1.35rem;display:block}.neg{color:var(--bad)}.pos{color:var(--ac)}
+label{display:block;margin:8px 0;font-weight:600;font-size:.92rem}label.ck{display:flex;gap:8px;align-items:center}
+input,select,textarea{display:block;width:100%;box-sizing:border-box;font:inherit;padding:8px;margin-top:3px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx)}input[type=checkbox]{width:auto;margin:0}
+.warn{background:var(--wb);color:var(--wt);padding:10px;border-radius:10px;margin-bottom:12px;font-size:.92rem}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.9rem}td,th{padding:6px;border-top:1px solid var(--bd);text-align:left;vertical-align:top}
+.fm{max-width:520px}
+</style></head><body><main>
+<h1>🐔 GrowthFactor Books</h1>
+<div id="bn"></div><nav id="nav"></nav><div id="view"></div>
+<datalist id="cl"></datalist>
+<script>
+const $=id=>document.getElementById(id),KEY="growthfactor_v1";
+const M=x=>x==null||!isFinite(x)?"—":(x<0?"−":"")+"$"+Math.abs(x).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const N=(x,d=0)=>x==null||!isFinite(x)?"—":x.toLocaleString("en-US",{maximumFractionDigits:d});
+const P=x=>x==null||!isFinite(x)?"—":(x*100).toFixed(1)+"%";
+const esc=s=>String(s??"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const today=()=>new Date().toISOString().slice(0,10);
+const cls=x=>x<0?"neg":"pos";
+let D,C,tab="dash",editId=null,ftype="sale",msg="";
+const S0={lbs:50,cFeed:13,cPkg:0.6,cPrice:24,fuelPrice:3.1,mpg:14,dMiles:30};
+function sample(){const t=(id,type,date,o)=>({id,type,date,...o});return{sample:true,s:{...S0},tx:[
+t("s01","feed","2026-09-20",{lbs:5000,amount:1300}),t("s02","bags","2026-09-20",{qty:150,amount:90}),
+t("s03","fill","2026-09-26",{qty:70}),t("s04","giveaway","2026-10-03",{qty:10,note:"Free sample bags, county feed store"}),
+t("s05","delivery","2026-10-03",{purpose:"giveaway",miles:30,cost:6.64,note:"Dropped off free bags"}),
+t("s06","sale","2026-10-08",{customer:"Maple Farm",qty:4,price:24,paid:96,gift:true}),
+t("s07","delivery","2026-10-08",{purpose:"sale",miles:18,cost:3.99,note:"Maple Farm delivery"}),
+t("s08","sale","2026-10-09",{customer:"Ruiz Family",qty:3,price:24,paid:0,gift:true}),
+t("s09","sale","2026-10-10",{customer:"Johnson Hens",qty:5,price:24,paid:120,gift:false}),
+t("s10","expense","2026-10-12",{category:"fuel",amount:45,note:"Diesel"}),
+t("s11","fill","2026-10-15",{qty:20}),t("s12","sale","2026-10-17",{customer:"Maple Farm",qty:6,price:24,paid:0,gift:false}),
+t("s13","sale","2026-10-20",{customer:"Ruiz Family",qty:4,price:24,paid:96,gift:false}),
+t("s14","payment","2026-10-22",{customer:"Ruiz Family",amount:72}),
+t("s15","expense","2026-10-05",{category:"other",amount:32,note:"Scale and scoop"}),
+t("s16","expense","2026-10-26",{category:"fuel",amount:38.5,note:"Diesel"})]}}
+function load(){try{const s=localStorage.getItem(KEY);if(s){const d=JSON.parse(s);if(d&&d.tx&&d.s){d.s={...S0,...d.s};return d}}}catch(e){}return sample()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
+
+function calc(){const S=D.s,c={feedLbs:0,feedCost:0,bagQty:0,bagCost:0,filled:0,sold:0,rev:0,paidNow:0,pay:0,free:0,fuel:0,other:0,gDel:0},cu={};
+const cs=n=>{const nm=(n||"").trim()||"(no name)",k=nm.toLowerCase();return cu[k]=cu[k]||{name:nm,orders:0,bags:0,bill:0,paid:0,gift:false}};
+for(const t of D.tx){const y=t.type;
+if(y=="feed"){c.feedLbs+=t.lbs;c.feedCost+=t.amount}else if(y=="bags"){c.bagQty+=t.qty;c.bagCost+=t.amount}
+else if(y=="fill")c.filled+=t.qty;
+else if(y=="sale"){const a=cs(t.customer),v=t.qty*t.price;c.sold+=t.qty;c.rev+=v;c.paidNow+=t.paid;a.orders++;a.bags+=t.qty;a.bill+=v;a.paid+=t.paid;if(t.gift)a.gift=true}
+else if(y=="payment"){c.pay+=t.amount;cs(t.customer).paid+=t.amount}
+else if(y=="giveaway")c.free+=t.qty;
+else if(y=="delivery"){if(t.purpose=="giveaway")c.gDel+=t.cost}
+else if(y=="expense")c[t.category=="fuel"?"fuel":"other"]+=t.amount}
+c.cust=Object.values(cu);const pc=c.cust.filter(x=>x.orders>0);
+c.pc=pc.length;c.repeat=pc.filter(x=>x.orders>1).length;c.gained=pc.filter(x=>x.gift).length;
+c.fpl=c.feedLbs?c.feedCost/c.feedLbs:0;c.ppb=c.bagQty?c.bagCost/c.bagQty:0;
+c.feedBag=S.lbs*c.fpl;c.unit=c.feedBag+c.ppb;
+c.feedOn=c.feedLbs-c.filled*S.lbs;c.emptyOn=c.bagQty-c.filled;c.fin=c.filled-c.sold-c.free;
+c.cogs=c.sold*c.unit;c.giveCost=c.free*c.unit;c.giveTot=c.giveCost+c.gDel;
+c.inv=c.feedOn*c.fpl+c.emptyOn*c.ppb+c.fin*c.unit;
+c.coll=c.paidNow+c.pay;c.unpaid=c.rev-c.coll;
+c.avgPrice=c.sold?c.rev/c.sold:S.cPrice;c.ppp=c.avgPrice-c.unit;
+c.gross=c.rev-c.cogs;c.net=c.gross-c.giveCost-c.fuel-c.other;
+c.cash=c.feedCost+c.bagCost+c.fuel+c.other;c.cac=c.gained?c.giveTot/c.gained:null;
+c.need=c.ppp>0?c.giveTot/c.ppp:null;return c}
+
+const row=(l,v,e,k)=>`<div class="r"><div><b>${l}</b><small>${e||""}</small></div><div class="v ${k||""}">${v}</div></div>`;
+const sec=(t,i,r)=>`<section><h2>${t}</h2><p class="i">${i||""}</p>${r}</section>`;
+const tile=(l,v,e,k)=>`<div class="t"><small>${l}</small><b class="${k||""}">${v}</b><small>${e}</small></div>`;
+function warns(){const w=[];if(C.feedOn<-0.01)w.push("You’ve recorded filling more bags than the feed you bought. Check your feed purchases or fill entries.");
+if(C.emptyOn<0)w.push("You’ve filled more bags than the empty bags you bought.");
+if(C.fin<0)w.push("You’ve sold or given away more bags than you’ve filled. Add a “Fill bags” entry.");
+if(!C.feedLbs)w.push("No feed purchase recorded yet, so product cost per bag shows as $0.");
+return w.map(x=>`<div class="warn">⚠ ${x}</div>`).join("")}
+
+const F={
+feed:{n:"Buy feed",f:[["lbs","Pounds of feed bought","n"],["amount","Total amount paid ($)","n"]]},
+bags:{n:"Buy empty bags",f:[["qty","Number of empty bags","n"],["amount","Total amount paid ($)","n"]]},
+fill:{n:"Fill bags (make finished bags)",f:[["qty","Number of bags filled","n"]]},
+sale:{n:"Sale",f:[["customer","Customer name","t"],["qty","Bags sold","n"],["price","Price per bag ($)","n"],["paid","Paid right now ($, 0 if nothing)","n"],["gift","This customer came from a giveaway (first purchase)","c"]]},
+payment:{n:"Customer payment",f:[["customer","Customer name","t"],["amount","Amount received ($)","n"]]},
+giveaway:{n:"Giveaway (free bags)",f:[["qty","Free bags given","n"],["note","Who / where (optional)","t"]]},
+delivery:{n:"Delivery",f:[["purpose","What was the trip for?","s",[["giveaway","Giveaway (marketing)"],["sale","Customer sale"]]],["miles","Miles driven","n"],["cost","Estimated fuel cost ($)","n"],["note","Note (optional)","t"]]},
+expense:{n:"Expense",f:[["category","Type","s",[["fuel","Fuel"],["other","Other business expense"]]],["amount","Amount paid ($)","n"],["note","What was it for?","t"]]}};
+const dcost=m=>m/(D.s.mpg||1)*D.s.fuelPrice;
+function info(t){const y=t.type;
+if(y=="feed")return[`Bought ${N(t.lbs)} lb feed (${M(t.amount/t.lbs)}/lb)`,-t.amount];
+if(y=="bags")return[`Bought ${N(t.qty)} empty bags (${M(t.amount/t.qty)} each)`,-t.amount];
+if(y=="fill")return[`Filled ${N(t.qty)} bags (uses ${N(t.qty*D.s.lbs)} lb feed)`,0];
+if(y=="sale")return[`${esc(t.customer)}: ${N(t.qty)} bags × ${M(t.price)} = ${M(t.qty*t.price)}; ${t.paid?"paid "+M(t.paid)+" now":"unpaid"}${t.gift?" · from giveaway":""}`,t.paid];
+if(y=="payment")return[`Payment from ${esc(t.customer)}`,t.amount];
+if(y=="giveaway")return[`Gave away ${N(t.qty)} free bags ${esc(t.note)}`,0];
+if(y=="delivery")return[`${t.purpose=="giveaway"?"Giveaway":"Sale"} delivery, ${N(t.miles,1)} mi, est. fuel ${M(t.cost)} ${esc(t.note)}`,0];
+return[`${t.category=="fuel"?"Fuel":"Expense"}: ${esc(t.note)}`,-t.amount]}
+const cashCell=v=>v?`<span class="${cls(v)}">${v>0?"+":""}${M(v)}</span>`:"—";
+
+const VIEWS={
+dash(){return warns()+`<div class="grid">`+
+tile("Total revenue",M(C.rev),"Sales you’ve billed, paid or not.")+
+tile("Money collected",M(C.coll),"Cash actually received from customers.")+
+tile("Total expenses paid",M(C.cash),"Cash that left your pocket (feed, bags, fuel, other).")+
+tile("Current inventory",M(C.inv),`${N(C.fin)} finished bags ready, plus raw feed and empty bags.`)+
+tile("Gross profit",M(C.gross),"Revenue minus the cost of bags sold.",cls(C.gross))+
+tile("Net profit",M(C.net),"Real profit after giveaways, fuel and other expenses.",cls(C.net))+
+tile("Profit per bag",M(C.sold?C.gross/C.sold:null),"Gross profit per paid bag sold.")+
+tile("Customer acquisition cost",M(C.cac),"Giveaway cost per new paying customer it brought in.")+
+tile("Bags sold",N(C.sold),"Paid bags only; giveaways are separate.")+
+tile("Paying customers",N(C.pc),`${N(C.repeat)} have bought more than once.`)+
+tile("Unpaid balances",M(C.unpaid),"Sold but not yet collected.",C.unpaid>0?"neg":"")+
+tile("Cash flow so far",M(C.coll-C.cash),"Collected minus all cash paid out. Not the same as profit.",cls(C.coll-C.cash))+
+`</div><p class="i" style="margin-top:12px">Profit and cash are different. Buying feed lowers your cash right away, but it only lowers profit when that feed is sold or given away.</p>`},
+add(){const opts=Object.keys(F).map(k=>`<option value="${k}" ${k==ftype?"selected":""}>${F[k].n}</option>`).join("");
+const rows=D.tx.slice().sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id)).map(t=>{const[i,c]=info(t);
+return`<tr><td>${t.date}</td><td>${F[t.type].n}</td><td>${i}</td><td>${cashCell(c)}</td><td style="white-space:nowrap"><button class="s" onclick="edit('${t.id}')">Edit</button> <button class="s d" onclick="two(this,()=>del('${t.id}'))">Delete</button></td></tr>`}).join("");
+return`<section><h2>${editId?"Edit entry":"Add an entry"}</h2><p class="i">Pick what happened, fill in the boxes, and save. Everything recalculates.</p><div class="fm"><label>What happened?<select id="ft" onchange="ftype=this.value;fform()">${opts}</select></label><div id="ff"></div><div id="er" class="neg"></div><button class="p" onclick="saveTx()">${editId?"Save changes":"Add entry"}</button> ${editId?`<button onclick="editId=null;render()">Cancel</button>`:""}<span class="pos"> ${msg}</span></div></section>
+<section><h2>Transaction history</h2><p class="i">Newest first. The “Cash” column shows money that actually came in (+) or went out (−) on that day.</p><div class="tw"><table><tr><th>Date</th><th>Type</th><th>Details</th><th>Cash</th><th></th></tr>${rows||"<tr><td colspan=5>No entries yet.</td></tr>"}</table></div></section>`},
+prod(){const s=D.s,inp=(k,l,st)=>`<label>${l}<input type="number" step="any" min="0" value="${s[k]}" oninput="setS('${k}',this.value)" ${st||""}></label>`;
+return sec("Product economics — try your numbers","Change these to see what one paid bag earns. This is a what-if calculator; your real numbers are below.",`<div class="fm">${inp("cFeed","Feed cost per bag ($)")}${inp("cPkg","Empty packaging cost per bag ($)")}${inp("cPrice","Selling price per bag ($)")}</div>`+
+row("Total cost per bag",`<span id="pc"></span>`,"Feed plus packaging.")+row("Profit per paid bag",`<span id="pp"></span>`,"Price minus cost for one bag sold.")+row("Profit margin",`<span id="pm"></span>`,"Share of each sale you keep as profit before fuel and other expenses."))+
+sec("Your actual numbers from records","Based on average cost of everything you’ve bought so far.",
+`<label style="max-width:300px">Pounds of feed in each bag<input type="number" step="any" min="1" value="${s.lbs}" onchange="setS('lbs',this.value);render()"></label>`+
+row("Actual feed cost per bag",M(C.feedBag),`Average ${M(C.fpl)} per lb × ${s.lbs} lb.`)+row("Actual packaging cost per bag",M(C.ppb),"Average price paid per empty bag.")+
+row("Average selling price",M(C.avgPrice),"Total revenue ÷ bags sold.")+row("Actual profit per paid bag",M(C.ppp),"",cls(C.ppp))+row("Actual profit margin",P(C.avgPrice?C.ppp/C.avgPrice:null),""))},
+give(){return warns()+sec("Giveaways and marketing","Free bags are a marketing expense, tracked apart from your normal costs.",
+row("Free bags distributed",N(C.free),"Total bags given away.")+row("Cost of feed and packaging given away",M(C.giveCost),"Free bags × your cost per bag.")+
+row("Delivery costs for giveaways",M(C.gDel),"Estimated fuel for giveaway trips. This is part of your Fuel expense, not extra.")+
+row("Total giveaway cost",M(C.giveTot),"What the giveaways cost you altogether.")+
+row("Paying customers gained",N(C.gained),"Customers marked “came from a giveaway” on their first sale.")+
+row("Customer acquisition cost (CAC)",M(C.cac),"Total giveaway cost ÷ paying customers gained. What each new customer cost you.")+
+row("Paid bags needed to recover giveaway cost",C.need==null?"—":N(C.need,1),`Total giveaway cost ÷ profit per paid bag (${M(C.ppp)}). You’ve sold ${N(C.sold)} so far.`))},
+sales(){const r=C.cust.filter(x=>x.orders>0).map(x=>`<tr><td>${esc(x.name)}</td><td>${x.orders}</td><td>${N(x.bags)}</td><td>${M(x.bill)}</td><td>${M(x.paid)}</td><td class="${x.bill-x.paid>0.005?"neg":""}">${M(x.bill-x.paid)}</td></tr>`).join("");
+return sec("Sales and customers","What you’ve sold and what you’ve actually been paid.",
+row("Bags sold",N(C.sold),"Paying bags only.")+row("Total sales revenue",M(C.rev),"Bags × price, whether or not you’ve been paid.")+
+row("Money actually collected",M(C.coll),"Payments at the time of sale plus later payments.")+row("Unpaid customer balances",M(C.unpaid),"Revenue minus money collected.",C.unpaid>0?"neg":"")+
+row("Average bags per customer",N(C.pc?C.sold/C.pc:null,1),"Bags sold ÷ paying customers.")+row("Repeat customers",N(C.repeat),"Customers who bought more than once."))+
+`<section><h2>Customer balances</h2><div class="tw"><table><tr><th>Customer</th><th>Orders</th><th>Bags</th><th>Billed</th><th>Paid</th><th>Owes</th></tr>${r||"<tr><td colspan=6>No sales yet.</td></tr>"}</table></div></section>`},
+exp(){const T=C.cogs+C.giveCost+C.fuel+C.other;return sec("Cash going out","Money you paid. Buying feed or bags counts here right away, but not as profit cost yet.",
+row("Feed purchases",M(C.feedCost),"Everything you spent buying feed.")+row("Packaging purchases",M(C.bagCost),"Empty bags bought.")+row("Fuel expenses",M(C.fuel),"Fuel you actually bought. Counted once.")+row("Other business expenses",M(C.other),"Supplies, fees, ads, etc.")+row("Total expenses paid (cash)",M(C.cash),"Total cash out."))+
+sec("Profit","Feed and bags only become a cost when they’re sold or given away.",
+row("Revenue",M(C.rev),"")+row("Cost of goods sold",M(C.cogs),"Feed and packaging in the bags you sold.")+row("Gross profit",M(C.gross),"Revenue minus cost of goods sold.",cls(C.gross))+
+row("Giveaway product cost (marketing)",M(C.giveCost),"Feed and packaging in free bags.")+row("Fuel expenses",M(C.fuel),"Includes giveaway trips; not counted twice.")+row("Other business expenses",M(C.other),"")+
+row("Total expenses for profit",M(T),"Cost of goods sold + giveaways + fuel + other.")+row("Net profit",M(C.net),"What GrowthFactor really earned.",cls(C.net))+
+row("Net profit per bag sold",M(C.sold?C.net/C.sold:null),""))+
+sec("Cash vs. profit","","<p>"+`Cash flow (collected − paid out): <b>${M(C.coll-C.cash)}</b>. Net profit: <b>${M(C.net)}</b>. The gap is mostly inventory you’ve bought but not sold (${M(C.inv)}) and unpaid balances (${M(C.unpaid)}).</p>`)},
+inv(){return warns()+sec("Inventory","What you have on hand right now.",
+row("Feed purchased",N(C.feedLbs)+" lb","Total pounds bought.")+row("Feed currently on hand",N(C.feedOn)+" lb","Bought minus feed put into bags.",C.feedOn<0?"neg":"")+
+row("Empty bags purchased",N(C.bagQty),"")+row("Empty bags used",N(C.filled),"One per bag filled.")+row("Empty bags on hand",N(C.emptyOn),"",C.emptyOn<0?"neg":"")+
+row("Finished bags ready to sell",N(C.fin),"Filled − sold − given away.",C.fin<0?"neg":"")+
+row("Inventory value",M(C.inv),`Feed ${M(C.feedOn*C.fpl)} + empty bags ${M(C.emptyOn*C.ppb)} + finished bags ${M(C.fin*C.unit)}, at your average cost.`))},
+del(){const s=D.s,inp=(k,l)=>`<label>${l}<input type="number" step="any" min="0" value="${s[k]}" oninput="setS('${k}',this.value)"></label>`;
+return sec("Delivery calculator","Estimate what a trip costs in fuel.",`<div class="fm">${inp("dMiles","Delivery miles (total driven)")}${inp("fuelPrice","Fuel cost per gallon ($)")}${inp("mpg","Truck miles per gallon")}</div>`+
+row("Gallons used",`<span id="dg"></span>`,"Miles ÷ miles per gallon.")+row("Estimated fuel cost per delivery",`<span id="dc"></span>`,"Gallons × price per gallon.")+
+`<p class="i">This is only an estimate to spread fuel across giveaways. Your real fuel purchases go in as Fuel expenses, and the estimate is never added on top.</p>`)},
+bk(){return sec("Records and backup","Your data is saved in this browser. Download a backup now and then in case you clear your browser or switch devices.",
+`<button onclick="exp('csv')">Export records (CSV)</button> <button onclick="exp('json')">Backup (JSON)</button> <button onclick="imp()">Restore from box below</button>
+<p class="i" id="bm" style="margin-top:8px">To restore: paste a backup into the box and press Restore.</p><textarea id="bx" rows="9"></textarea><p style="margin-top:12px"><button class="d" onclick="two(this,reset)">${D.sample?"Clear sample data and start fresh":"Erase all records"}</button></p>`)}};
+
+function render(){C=calc();$("bn").innerHTML=D.sample?`<div class="warn"><b>SAMPLE DATA.</b> Everything shown is made-up example data. When you’re ready, go to Records &amp; Backup and clear it to start with your own.</div>`:"";
+const T=[["dash","Dashboard"],["add","Add &amp; History"],["prod","Product Economics"],["give","Giveaways"],["sales","Sales"],["exp","Expenses &amp; Profit"],["inv","Inventory"],["del","Delivery Calculator"],["bk","Records &amp; Backup"]];
+$("nav").innerHTML=T.map(([k,l])=>`<button class="${k==tab?"on":""}" onclick="tab='${k}';msg='';render()">${l}</button>`).join("");
+$("view").innerHTML=VIEWS[tab]();$("cl").innerHTML=C.cust.map(x=>`<option value="${esc(x.name)}">`).join("");
+if(tab=="add")fform();if(tab=="prod")updProd();if(tab=="del")updDel()}
+function setS(k,v){D.s[k]=parseFloat(v)||0;save();if(tab=="prod")updProd();if(tab=="del")updDel();else if(k!="lbs"&&tab!="prod")render()}
+function updProd(){const s=D.s,c=s.cFeed+s.cPkg,p=s.cPrice-c;$("pc").textContent=M(c);$("pp").textContent=M(p);$("pm").textContent=P(s.cPrice?p/s.cPrice:null)}
+function updDel(){const s=D.s;$("dg").textContent=N(s.dMiles/(s.mpg||1),2)+" gal";$("dc").textContent=M(dcost(s.dMiles))}
+function fform(){const f=F[ftype],v=editId?D.tx.find(x=>x.id==editId):{},df={price:D.s.cPrice,paid:0};let h=`<label>Date<input type="date" id="f_date" value="${v.date||today()}"></label>`;
+for(const[k,l,kd,o]of f.f){const val=v[k]!==undefined?v[k]:(df[k]??"");
+if(kd=="s")h+=`<label>${l}<select id="f_${k}">${o.map(([a,b])=>`<option value="${a}" ${val==a?"selected":""}>${b}</option>`).join("")}</select></label>`;
+else if(kd=="c")h+=`<label class="ck"><input type="checkbox" id="f_${k}" ${val?"checked":""}> ${l}</label>`;
+else h+=`<label>${l}<input id="f_${k}" ${kd=="n"?'type="number" step="any" min="0" inputmode="decimal"':'type="text" list="cl"'} value="${esc(val)}" ${k=="miles"?'oninput="$(\'f_cost\').value=dcost(parseFloat(this.value)||0).toFixed(2)"':""}></label>`}
+$("ff").innerHTML=h}
+function saveTx(){const f=F[ftype],o={id:editId||uid(),type:ftype,date:$("f_date").value},er=m=>{$("er").textContent=m};
+if(!o.date)return er("Please pick a date.");
+for(const[k,l,kd]of f.f){const e=$("f_"+k);
+if(kd=="n"){o[k]=parseFloat(e.value);if(isNaN(o[k])||o[k]<0)return er(`Please enter a number for “${l}”.`);if((k=="qty"||k=="lbs")&&o[k]<=0)return er(`“${l}” must be more than zero.`)}
+else if(kd=="c")o[k]=e.checked;else o[k]=e.value.trim()}
+if((ftype=="sale"||ftype=="payment")&&!o.customer)return er("Please enter the customer’s name.");
+if(editId)D.tx=D.tx.map(x=>x.id==editId?o:x);else D.tx.push(o);
+editId=null;save();msg="Saved ✓";render()}
+function edit(id){const t=D.tx.find(x=>x.id==id);editId=id;ftype=t.type;render();window.scrollTo(0,0)}
+function del(id){D.tx=D.tx.filter(x=>x.id!=id);if(editId==id)editId=null;save();render()}
+function two(b,fn){if(b.dataset.c){fn();return}if(!b.dataset.t)b.dataset.t=b.textContent;b.dataset.c=1;b.textContent="Tap again to confirm";setTimeout(()=>{b.dataset.c="";b.textContent=b.dataset.t},4000)}
+function reset(){D={sample:false,s:D.s,tx:[]};save();tab="dash";render()}
+const q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+function exp(k){const txt=k=="csv"?"Date,Type,Details,Cash in (+) / out (-)\n"+D.tx.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(t=>{const[i,c]=info(t);return[t.date,F[t.type].n,i.replace(/&amp;/g,"&"),c.toFixed(2)].map(q).join(",")}).join("\n"):JSON.stringify(D,null,1);
+$("bx").value=txt;try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"text/plain"}));a.download=k=="csv"?"growthfactor-records.csv":"growthfactor-backup.json";document.body.appendChild(a);a.click();a.remove()}catch(e){}
+$("bm").textContent="Your records are in the box below. If no file downloaded, tap in the box, select all, and copy it into a file or email."}
+function imp(){try{const d=JSON.parse($("bx").value);if(!Array.isArray(d.tx)||!d.s)throw 0;D={...d,s:{...S0,...d.s}};save();render();$("bm").textContent="Restored ✓"}catch(e){$("bm").textContent="That doesn’t look like a GrowthFactor backup (JSON). Nothing was changed."}}
+D=load();render();
+</script></main></body></html>
